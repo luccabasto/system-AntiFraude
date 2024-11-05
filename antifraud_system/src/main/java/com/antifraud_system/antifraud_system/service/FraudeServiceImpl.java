@@ -1,47 +1,57 @@
 package com.antifraud_system.antifraud_system.service;
 
-import com.antifraud_system.antifraud_system.dto.FraudeDTO;
-import com.antifraud_system.antifraud_system.model.AnaliseFraude;
-import com.antifraud_system.antifraud_system.repository.AnaliseFraudeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+
+import com.antifraud_system.antifraud_system.dto.AnaliseFraudeDTO;
+import com.antifraud_system.antifraud_system.model.*;
+import com.antifraud_system.antifraud_system.repository.*;
+import com.antifraud_system.antifraud_system.service.FraudeService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class FraudeServiceImpl implements FraudeService {
+public class FraudeServiceImpl implements FraudeService{
 
     @Autowired
     private AnaliseFraudeRepository analiseFraudeRepository;
+    @Autowired
+    private BeneficiarioRepository beneficiarioRepository;
+    @Autowired
+    private ClinicaRepository clinicaRepository;
 
     @Override
-    public FraudeDTO analisarBeneficiarioSuspeito(Long beneficiarioId) {
-        FraudeDTO fraudeDTO = new FraudeDTO();
-        fraudeDTO.setSuspeitaFraude(true);
-        fraudeDTO.setDescricao("Beneficiário com comportamento suspeito.");
+    public AnaliseFraudeDTO criarAnaliseFraude(AnaliseFraudeDTO analiseFraudeDTO){
 
-        AnaliseFraude analise = new AnaliseFraude();
-        analise.setBeneficiarioId(beneficiarioId);
-        analise.setDescricao(fraudeDTO.getDescricao());
-        analise.setDataAnalise(LocalDateTime.now());
-        analise.setSuspeitaFraude(fraudeDTO.isSuspeitaFraude());
-        analiseFraudeRepository.save(analise);
+        Beneficiario beneficiario = beneficiarioRepository.findById(analiseFraudeDTO.getBeneficiarioId())
+                .orElseThrow(() -> new RuntimeException("Beneficiário não encontrado"));
+        Clinica clinica = clinicaRepository.findById(analiseFraudeDTO.getClinicaId())
+                .orElseThrow(() -> new RuntimeException("Clínica não encontrada"));
 
-        return fraudeDTO;
+        AnaliseFraude analiseFraude = analiseFraudeDTO.toEntity(beneficiario, clinica);
+        analiseFraude = analiseFraudeRepository.save(analiseFraude);
+
+        return AnaliseFraudeDTO.fromEntity(analiseFraude);
     }
 
     @Override
-    public FraudeDTO analisarClinicaSuspeita(Long clinicaId) {
-        FraudeDTO fraudeDTO = new FraudeDTO();
-        fraudeDTO.setSuspeitaFraude(true);
-        fraudeDTO.setDescricao("Clínica com atividades suspeitas.");
+    public List<AnaliseFraudeDTO> listarAnaliseFraude(){
+        return analiseFraudeRepository.findAll()
+                .stream()
+                .map(AnaliseFraudeDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
 
-        AnaliseFraude analise = new AnaliseFraude();
-        analise.setClinicaId(clinicaId);
-        analise.setDescricao(fraudeDTO.getDescricao());
-        analise.setDataAnalise(LocalDateTime.now());
-        analise.setSuspeitaFraude(fraudeDTO.isSuspeitaFraude());
-        analiseFraudeRepository.save(analise);
+    @Override
+    public AnaliseFraudeDTO buscarAnaliseFraudePorId(Long id){
+        AnaliseFraude analiseFraude = analiseFraudeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Análise de fraude não encontrada."));
+        return AnaliseFraudeDTO.fromEntity(analiseFraude);
+    }
 
-        return fraudeDTO;
+    @Override
+    public void excluirAnaliseFraude(Long id){
+        analiseFraudeRepository.deleteById(id);
     }
 }

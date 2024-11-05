@@ -1,8 +1,13 @@
 package com.antifraud_system.antifraud_system.service;
 
-import com.antifraud_system.antifraud_system.dto.FraudeDTO;
+import com.antifraud_system.antifraud_system.dto.AnaliseFraudeDTO;
+
+import java.util.List;
 
 public interface FraudeService {
-    FraudeDTO analisarBeneficiarioSuspeito(Long beneficiarioId);
-    FraudeDTO analisarClinicaSuspeita(Long clinicaId);
+
+    AnaliseFraudeDTO criarAnaliseFraude(AnaliseFraudeDTO analiseFraudeDTO);
+    List<AnaliseFraudeDTO> listarAnaliseFraude();
+    AnaliseFraudeDTO buscarAnaliseFraudePorId(Long id);
+    void excluirAnaliseFraude(Long id);
 }

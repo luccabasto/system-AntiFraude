@@ -1,6 +1,6 @@
 package com.antifraud_system.antifraud_system.controller;
 
-import com.antifraud_system.antifraud_system.dto.FraudeDTO;
+import com.antifraud_system.antifraud_system.dto.AnaliseFraudeDTO;
 import com.antifraud_system.antifraud_system.service.FraudeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,15 +18,15 @@ public class FraudeController {
 
     @PostMapping("/analisar/beneficiario/{beneficiarioId}")
     @Operation(summary = "Analisar fraudes para um beneficiário", description = "Analisa se o beneficiário tem comportamentos suspeitos de fraude")
-    public ResponseEntity<FraudeDTO> analisarFraudeBeneficiario(@PathVariable Long beneficiarioId) {
-        FraudeDTO resultado = fraudeService.analisarBeneficiarioSuspeito(beneficiarioId);
+    public ResponseEntity<AnaliseFraudeDTO> analisarFraudeBeneficiario(@PathVariable Long beneficiarioId) {
+        AnaliseFraudeDTO resultado = fraudeService.buscarAnaliseFraudePorId(beneficiarioId);
         return ResponseEntity.ok(resultado);
     }
 
     @PostMapping("/analisar/clinica/{clinicaId}")
     @Operation(summary = "Analisar fraudes para uma clínica", description = "Analisa se a clínica apresenta atividades suspeitas de fraude")
-    public ResponseEntity<FraudeDTO> analisarFraudeClinica(@PathVariable Long clinicaId) {
-        FraudeDTO resultado = fraudeService.analisarClinicaSuspeita(clinicaId);
+    public ResponseEntity<AnaliseFraudeDTO> analisarFraudeClinica(@PathVariable Long clinicaId) {
+        AnaliseFraudeDTO resultado = fraudeService.buscarAnaliseFraudePorId(clinicaId);
         return ResponseEntity.ok(resultado);
     }
 }

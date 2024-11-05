@@ -19,11 +19,11 @@ public class AnaliseFraude {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiario_id", nullable = false)
-    private Beneficiario beneficiario;
+    private Beneficiario beneficiarioId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clinica_id", nullable = false)
-    private Clinica clinica;
+    private Clinica clinicaId;
 
     private LocalDateTime dataAnalise;
     private boolean suspeitaFraude;
@@ -32,8 +32,8 @@ public class AnaliseFraude {
     // Método auxiliar para criar uma nova análise de fraude
     public static AnaliseFraude criarNova(Beneficiario beneficiario, Clinica clinica, boolean suspeitaFraude, String descricao) {
         AnaliseFraude analiseFraude = new AnaliseFraude();
-        analiseFraude.setBeneficiario(beneficiario);
-        analiseFraude.setClinica(clinica);
+        analiseFraude.setBeneficiarioId(beneficiario);
+        analiseFraude.setClinicaId(clinica);
         analiseFraude.setDataAnalise(LocalDateTime.now());
         analiseFraude.setSuspeitaFraude(suspeitaFraude);
         analiseFraude.setDescricao(descricao);
